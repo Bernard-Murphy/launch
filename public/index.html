@@ -31,6 +31,14 @@
             const fd = new FormData();
             fd.append("file", file, file.name);
             document.body.removeChild(input);
+            axios
+              .post("/", fd, {
+                headers: {
+                  "Content-Type": "multipart/form-data",
+                },
+              })
+              .then((res) => console.log("res", res))
+              .catch((err) => console.log("err", err));
           };
           input.click();
         } catch (err) {
@@ -40,8 +48,10 @@
     </script>
   </head>
   <body>
-    <div class="d-flex justify-content-center align-items-center vh-100">
-      <button onclick="upload()" class="mt-5 btn btn-primary">Upload</button>
+    <div class="d-flex justify-content-center align-items-start vh-100">
+      <button onclick="upload()" class="mt-5 btn btn-primary btn-lg">
+        Upload
+      </button>
     </div>
   </body>
   <script
