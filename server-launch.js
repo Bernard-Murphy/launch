@@ -38,9 +38,19 @@ app.post("/", async (req, res) => {
     if (!file) throw "errr";
 
     const md5 = file.md5;
+    const appDir = __dirname + "/apps/" + md5;
+    const shellScript = __dirname + "/" + md5 + ".sh";
+    console.log("shell", shellScript);
 
-    fs.writeFileSync(__dirname + "/apps/" + md5 + ".tar.gz", file.data);
-    fs.writeFileSync(__dirname + "/" + md5 + ".sh", shell(md5));
+    if (fs.existsSync(appDir)) {
+      fs.rmSync(appDir, { recursive: true });
+    }
+    fs.mkdirSync(appDir);
+    fs.writeFileSync(
+      __dirname + "/apps/" + md5 + "/" + "app.tar.gz",
+      file.data
+    );
+    fs.writeFileSync(shellScript, shell(md5));
 
     const logStream = fs.createWriteStream(
       __dirname + "/logs/" + md5 + ".log",
@@ -50,6 +60,7 @@ app.post("/", async (req, res) => {
 
     proc.stdout.pipe(logStream);
     proc.stderr.pipe(logStream);
+    proc.on("close", () => fs.rmSync(shellScript, { force: true }));
 
     res.sendStatus(200);
   } catch (err) {

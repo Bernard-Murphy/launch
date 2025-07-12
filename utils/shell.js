@@ -1,10 +1,12 @@
 const script = (md5) => `
 #!/bin/bash
 
-cd apps
-tar -xvzf ${md5}.tar.gz
-rm ${md5}.tar.gz
-cd ${md5}
+pwd
+cd apps/${md5}
+pwd
+tar -xvzf app.tar.gz
+rm app.tar.gz
+pwd
 npm install
 node createConfigFiles.js
 npm run build
